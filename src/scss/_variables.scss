@@ -1,0 +1,18 @@
+// Variable overrides
+@import "node_modules/@coreui/coreui/scss/variables/_colors.scss";
+
+
+$red:  #C00327;
+$dark: #29363D;
+$gray-800: #29363D;
+
+$colors: (
+  red: $red
+);
+
+$theme-colors: (
+	primary: $red,
+	dark: #29363D,
+	info: $secondary,
+	danger: $red	
+);

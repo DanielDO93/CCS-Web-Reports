@@ -1,0 +1,6 @@
+{
+  "name": "cardChart",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./cardChart.js"
+}
