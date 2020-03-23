@@ -20,7 +20,7 @@ export default class SalesforceAPI {
     return this.fetch(
       "https://api.ccscontactcenter.com/v1/auth/salesforceQuery",
       {
-        method: "GET",
+        method: "POST",
         body: {
           token: localStorage.getItem("sfToken"),
           instance:
