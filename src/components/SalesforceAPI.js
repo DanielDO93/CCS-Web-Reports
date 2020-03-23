@@ -4,25 +4,40 @@ export default class SalesforceAPI {
   }
 
   async fetch(url, options) {
+    // performs api calls sending the required authentication headers
     const headers = {
       Accept: "application/json",
-      "Content-Type": "application/json",
-      Authorization: localStorage.getItem("sfToken")
+      "Content-Type": "application/json"
     };
+
+    // Setting Authorization header
+    // Authorization: Bearer xxxxxxx.xxxxxxxx.xxxxxx
+    if (await this.Auth.loggedIn()) {
+      headers["Authorization"] = "Bearer " + (await this.Auth.getToken());
+    } else {
+      window.location.href = "/login";
+    }
 
     return fetch(url, {
       headers,
       ...options
-    }).then(response => response.json());
+    })
+      .then(this._checkStatus)
+      .then(response => response.json());
   }
 
   salesforceQuery(query) {
     return this.fetch(
-      localStorage.getItem("sfInstance") +
-        "/services/data/v42.0/query/?q=" +
-        query,
+      "https://api.ccscontactcenter.com/v1/auth/salesforceQuery",
       {
-        method: "GET"
+        method: "GET",
+        body: {
+          token: localStorage.getItem("sfToken"),
+          instance:
+            localStorage.getItem("sfInstance") +
+            "/services/data/v42.0/query/?q=",
+          query: query
+        }
       }
     ).then(res => {
       return Promise.resolve(res);
