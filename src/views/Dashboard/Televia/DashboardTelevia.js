@@ -19,6 +19,7 @@ import { CustomTooltips } from "@coreui/coreui-plugin-chartjs-custom-tooltips";
 
 import withAuth from "../../../components/withAuth";
 import API_CCS from "../../../components/API_CCS";
+import Salesforce from "../../../components/SalesforceAPI";
 import WidgetCard from "../../../components/charts/WidgetCard";
 import * as ChartConfig from "../ChartConfig";
 
@@ -29,10 +30,10 @@ const brandPrimary = "#C00327";
 //const brandInfo = getStyle('--info')
 
 class DashboardTelevia extends Component {
-
   constructor(props) {
     super(props);
     this.API_CCS = new API_CCS();
+    this.Salesforce = new Salesforce();
     this.fetchAll = this.fetchAll.bind(this);
     this.updateMainGraph = this.updateMainGraph.bind(this);
     this.getNameKPI = this.getNameKPI.bind(this);
@@ -67,6 +68,9 @@ class DashboardTelevia extends Component {
     var arrayMedioQuejas = await this.requestMedioQuejas();
     var arrayTop5Motivos = await this.requestTop5Motivos();
     var arrayTop5Vialidades = await this.requestTop5Vialidades();
+    var salesforceData = await this.salesforceExample();
+
+    console.log(salesforceData);
 
     var secondaryChartData1 = {
       labels: Object.keys(arrayMedioQuejas[0]),
@@ -86,16 +90,15 @@ class DashboardTelevia extends Component {
       ]
     };
 
-
     var sChrtL2 = [];
     JSON.stringify(arrayTop5Motivos, (key, value) => {
-      if (key === 'Motivo') sChrtL2.push(value);
-      return value
+      if (key === "Motivo") sChrtL2.push(value);
+      return value;
     });
     var sChrtD2 = [];
     JSON.stringify(arrayTop5Motivos, (key, value) => {
-      if (key === 'Quejas') sChrtD2.push(value);
-      return value
+      if (key === "Quejas") sChrtD2.push(value);
+      return value;
     });
 
     var secondaryChartData2 = {
@@ -118,13 +121,13 @@ class DashboardTelevia extends Component {
 
     var sChrtL3 = [];
     JSON.stringify(arrayTop5Vialidades, (key, value) => {
-      if (key === 'Vialidad') sChrtL3.push(value);
-      return value
+      if (key === "Vialidad") sChrtL3.push(value);
+      return value;
     });
     var sChrtD3 = [];
     JSON.stringify(arrayTop5Vialidades, (key, value) => {
-      if (key === 'Quejas') sChrtD3.push(value);
-      return value
+      if (key === "Quejas") sChrtD3.push(value);
+      return value;
     });
 
     var secondaryChartData3 = {
@@ -157,7 +160,7 @@ class DashboardTelevia extends Component {
       totalQA: (arrayTotales[0].Calidad * 100).toPrecision(3) + "%",
       secondaryChartData1: secondaryChartData1,
       secondaryChartData2: secondaryChartData2,
-      secondaryChartData3:secondaryChartData3
+      secondaryChartData3: secondaryChartData3
     });
 
     var data = await this.API_CCS.getGenerales(
@@ -391,7 +394,14 @@ class DashboardTelevia extends Component {
       this.state.selectedInterval
     );
     return response;
-  }; 
+  };
+
+  salesforceExample = async () => {
+    const response = await this.Salesforce.salesforceQuery(
+      "SELECT  id FROM Account"
+    );
+    return response;
+  };
 
   getYear(numero) {
     switch (numero) {
@@ -750,7 +760,6 @@ class DashboardTelevia extends Component {
               </Card>
             </Col>
           </Row>
-
         </div>
       );
     }

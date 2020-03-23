@@ -1,5 +1,5 @@
 {
-  "name": "CCS_Web_Reports",
+  "name": "ccs-web-reports",
   "version": "2.1.4",
   "description": "Portal de Reportes Web CCS",
   "author": "Isaac Contreras",
@@ -25,6 +25,7 @@
     "enzyme-adapter-react-16": "^1.9.1",
     "flag-icon-css": "^3.2.1",
     "font-awesome": "^4.7.0",
+    "jsforce": "^1.9.3",
     "jwt-decode": "^2.2.0",
     "md5": "^2.2.1",
     "moment": "^2.24.0",
@@ -59,9 +60,6 @@
     "test:cov": "react-scripts test --coverage",
     "test:debug": "react-scripts --inspect-brk test --runInBand",
     "eject": "react-scripts eject"
-  },
-  "bugs": {
-    "url": ""
   },
   "eslintConfig": {
     "extends": "react-app"

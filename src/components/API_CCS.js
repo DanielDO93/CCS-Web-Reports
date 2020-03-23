@@ -29,6 +29,14 @@ export default class API_CCS {
       .then(response => response.json());
   }
 
+  salesForceAuth() {
+    return this.fetch("https://api.ccscontactcenter.com/v1/auth/salesforceccsauth", {
+      method: "GET"
+    }).then(res => {
+      return Promise.resolve(res);
+    });
+  }
+
   getGenerales(tipo, campania, totalizado) {
     return this.fetch(
       "https://api.ccscontactcenter.com/v1/Campaigns/General/General?tipo=" +
@@ -139,17 +147,14 @@ export default class API_CCS {
   }
 
   getParameterCatalog(parameter) {
-
-
     return this.fetch(
-      "https://api.ccscontactcenter.com/v1/reports/ParamsList?Parametro=" + parameter,
+      "https://api.ccscontactcenter.com/v1/reports/ParamsList?Parametro=" +
+        parameter,
       {
         method: "GET"
       }
     ).then(res => {
       return Promise.resolve(res);
     });
-
-    
   }
 }
