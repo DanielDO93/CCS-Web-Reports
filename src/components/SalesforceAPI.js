@@ -10,20 +10,10 @@ export default class SalesforceAPI {
       "Content-Type": "application/json"
     };
 
-    // Setting Authorization header
-    // Authorization: Bearer xxxxxxx.xxxxxxxx.xxxxxx
-    if (await this.Auth.loggedIn()) {
-      headers["Authorization"] = "Bearer " + (await this.Auth.getToken());
-    } else {
-      window.location.href = "/login";
-    }
-
     return fetch(url, {
       headers,
       ...options
-    })
-      .then(this._checkStatus)
-      .then(response => response.json());
+    }).then(response => response.json());
   }
 
   salesforceQuery(query) {
