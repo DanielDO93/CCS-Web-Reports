@@ -398,9 +398,23 @@ class DashboardTelevia extends Component {
 
   salesforceExample = async () => {
     const response = await this.Salesforce.salesforceQuery(
-      "SELECT  id FROM Account"
+      "SELECT id,CreatedDate, ClosedDate FROM Case"
     );
-    return response;
+
+  
+    var abiertos = [];
+    JSON.stringify(response.records, (key, value) => {
+      if (key === "ClosedDate" && value === null) abiertos.push(value);
+      return value;
+    });
+
+    var result = {
+      totales: response.records.length,
+      abiertos: abiertos.length,
+      cerrados: response.records.length - abiertos.length
+    };
+
+    return result;
   };
 
   getYear(numero) {
