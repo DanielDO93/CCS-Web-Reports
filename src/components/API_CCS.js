@@ -10,7 +10,7 @@ export default class API_CCS {
     // performs api calls sending the required authentication headers
     const headers = {
       Accept: "application/json",
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
     };
 
     // Setting Authorization header
@@ -23,16 +23,19 @@ export default class API_CCS {
 
     return fetch(url, {
       headers,
-      ...options
+      ...options,
     })
       .then(this._checkStatus)
-      .then(response => response.json());
+      .then((response) => response.json());
   }
 
   salesForceAuth() {
-    return this.fetch("https://api.ccscontactcenter.com/v1/auth/salesforceccsauth", {
-      method: "GET"
-    }).then(res => {
+    return this.fetch(
+      "https://api.ccscontactcenter.com/v1/auth/salesforceccsauth",
+      {
+        method: "GET",
+      }
+    ).then((res) => {
       return Promise.resolve(res);
     });
   }
@@ -46,9 +49,9 @@ export default class API_CCS {
         "&totalizado=" +
         totalizado,
       {
-        method: "GET"
+        method: "GET",
       }
-    ).then(res => {
+    ).then((res) => {
       return Promise.resolve(res);
     });
   }
@@ -57,9 +60,9 @@ export default class API_CCS {
     return this.fetch(
       "https://api.ccscontactcenter.com/v1/Campaigns/Avatar?id=" + id,
       {
-        method: "GET"
+        method: "GET",
       }
-    ).then(res => {
+    ).then((res) => {
       return Promise.resolve(res);
     });
   }
@@ -69,9 +72,9 @@ export default class API_CCS {
       "https://api.ccscontactcenter.com/v1/Campaigns/Edenred/Resumen_Edenred?tipo=" +
         tipo,
       {
-        method: "GET"
+        method: "GET",
       }
-    ).then(res => {
+    ).then((res) => {
       return Promise.resolve(res);
     });
   }
@@ -81,9 +84,9 @@ export default class API_CCS {
       "https://api.ccscontactcenter.com/v1/Campaigns/Edenred/Totales_Edenred?tipo=" +
         tipo,
       {
-        method: "GET"
+        method: "GET",
       }
-    ).then(res => {
+    ).then((res) => {
       return Promise.resolve(res);
     });
   }
@@ -93,9 +96,9 @@ export default class API_CCS {
       "https://api.ccscontactcenter.com/v1/Campaigns/Televia//Quejas/Medio?tipo=" +
         tipo,
       {
-        method: "GET"
+        method: "GET",
       }
-    ).then(res => {
+    ).then((res) => {
       return Promise.resolve(res);
     });
   }
@@ -105,9 +108,9 @@ export default class API_CCS {
       "https://api.ccscontactcenter.com/v1/Campaigns/Televia//Quejas/Top_5_Motivos?tipo=" +
         tipo,
       {
-        method: "GET"
+        method: "GET",
       }
-    ).then(res => {
+    ).then((res) => {
       return Promise.resolve(res);
     });
   }
@@ -117,9 +120,9 @@ export default class API_CCS {
       "https://api.ccscontactcenter.com/v1/Campaigns/Televia//Quejas/Top_5_Vialidades?tipo=" +
         tipo,
       {
-        method: "GET"
+        method: "GET",
       }
-    ).then(res => {
+    ).then((res) => {
       return Promise.resolve(res);
     });
   }
@@ -128,9 +131,25 @@ export default class API_CCS {
     return this.fetch(
       "https://api.ccscontactcenter.com/v1/reports?campaign=" + campaign,
       {
-        method: "GET"
+        method: "GET",
       }
-    ).then(res => {
+    ).then((res) => {
+      return Promise.resolve(res);
+    });
+  }
+
+  getAltanRedes(Interval, Totalized, Database) {
+    return this.fetch(
+      "https://api.ccscontactcenter.com/v1/campaigns/altan_redes/general?tipo=" +
+        Interval +
+        "&totalizado=" +
+        Totalized +
+        "&base=" +
+        Database,
+      {
+        method: "GET",
+      }
+    ).then((res) => {
       return Promise.resolve(res);
     });
   }
@@ -139,9 +158,9 @@ export default class API_CCS {
     return this.fetch(
       "https://api.ccscontactcenter.com/v1/reports/params?path=" + path,
       {
-        method: "GET"
+        method: "GET",
       }
-    ).then(res => {
+    ).then((res) => {
       return Promise.resolve(res);
     });
   }
@@ -151,9 +170,9 @@ export default class API_CCS {
       "https://api.ccscontactcenter.com/v1/reports/ParamsList?Parametro=" +
         parameter,
       {
-        method: "GET"
+        method: "GET",
       }
-    ).then(res => {
+    ).then((res) => {
       return Promise.resolve(res);
     });
   }
