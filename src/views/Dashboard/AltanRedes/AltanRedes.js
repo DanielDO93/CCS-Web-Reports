@@ -12,6 +12,7 @@ import {
   CardGroup,
   CardHeader,
 } from "reactstrap";
+import Select from "react-select";
 
 import { hexToRgba } from "@coreui/coreui/dist/js/coreui-utilities";
 import Loader from "react-loader-spinner";
@@ -25,6 +26,34 @@ import moment from "moment";
 import "moment/locale/es";
 
 const brandPrimary = "#C00327";
+
+const customStyles = {
+  control: (base, state) => ({
+    ...base,
+    border: "1px solid #e4e7ea",
+    borderRadius: "0.25rem",
+    fontSize: "0.875rem",
+    boxShadow: state.isFocused ? "0 0 0 0.2rem rgba(192, 3, 39, 0.25)" : 0,
+    borderColor: state.isFocused ? brandPrimary : base.borderColor,
+    "&:hover": {
+      borderColor: state.isFocused ? brandPrimary : base.borderColor,
+    },
+    "&:active": {
+      borderColor: state.isFocused ? brandPrimary : base.borderColor,
+    },
+  }),
+};
+
+const theme = (theme) => ({
+  ...theme,
+  colors: {
+    ...theme.colors,
+    primary25: "rgba(192,3,39,.2)",
+    primary50: "rgba(192,3,39,.2)",
+    primary75: "rgba(192,3,39,.2)",
+    primary: "rgba(192,3,39,.8)",
+  },
+});
 
 class DashboardGenerico extends Component {
   constructor(props) {
@@ -46,10 +75,24 @@ class DashboardGenerico extends Component {
       totalContactos: 0,
       totalEfectivos: 0,
       totalEncuestas: 0,
+      baseSeleccionada: "",
+      databases: [],
     };
 
     setInterval(() => this.fetchAll(), 900000);
   }
+
+  handleChangeDBB = (e) => {
+    try {
+      this.setState({ baseSeleccionada: e.label }, () => {
+        this.fetchAll();
+      });
+    } catch (err) {
+      this.setState({ baseSeleccionada: "" }, () => {
+        this.fetchAll();
+      });
+    }
+  };
 
   async fetchAll() {
     this.setState({ loading: true });
@@ -166,11 +209,16 @@ class DashboardGenerico extends Component {
     this.setState({ loadMainGraph: false });
   }
 
+  requestBases = async () => {
+    const response = await this.API_CCS.getBasesAltanRedes();
+    return response;
+  };
+
   requestTotales = async () => {
     const response = await this.API_CCS.getAltanRedes(
       this.state.selectedInterval,
       1,
-      "NULL"
+      this.state.baseSeleccionada === "" ? "NULL" : this.state.baseSeleccionada
     );
     return response;
   };
@@ -179,7 +227,7 @@ class DashboardGenerico extends Component {
     const response = await this.API_CCS.getAltanRedes(
       this.state.selectedInterval,
       0,
-      "NULL"
+      this.state.baseSeleccionada === "" ? "NULL" : this.state.baseSeleccionada
     );
     return response;
   };
@@ -224,8 +272,16 @@ class DashboardGenerico extends Component {
     this.fetchAll();
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.fetchAll();
+    var bases = await this.requestBases();
+    var basesOK = [];
+    bases.forEach((index) => {
+      var temp = { value: index.base, label: index.base };
+      basesOK.push(temp);
+    });
+
+    this.setState({ databases: basesOK });
   }
 
   render() {
@@ -361,6 +417,24 @@ class DashboardGenerico extends Component {
                             Año
                           </Button>
                         </ButtonGroup>
+                        <br />
+                        <div style={{ height: 5 }} />
+                        <Select
+                          options={this.state.databases}
+                          styles={customStyles}
+                          isClearable={true}
+                          placeholder={"-Todas las Bases-"}
+                          theme={theme}
+                          onChange={this.handleChangeDBB}
+                          value={
+                            this.state.baseSeleccionada === ""
+                              ? null
+                              : {
+                                  label: this.state.baseSeleccionada,
+                                  value: this.state.baseSeleccionada,
+                                }
+                          }
+                        />
                       </Col>
                     </div>
                   </Row>

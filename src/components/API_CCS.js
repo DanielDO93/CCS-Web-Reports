@@ -154,6 +154,14 @@ export default class API_CCS {
     });
   }
 
+  getBasesAltanRedes() {
+    return this.fetch(
+      "https://api.ccscontactcenter.com/v1/campaigns/altan_redes/bases"
+    ).then((res) => {
+      return Promise.resolve(res);
+    });
+  }
+
   getParameters(path) {
     return this.fetch(
       "https://api.ccscontactcenter.com/v1/reports/params?path=" + path,
