@@ -56,28 +56,29 @@ const theme = (theme) => ({
 });
 
 class DashboardGenerico extends Component {
+  state = {
+    loading: true,
+    loadMainGraph: false,
+    selectedKPI: 0,
+    percentKPI: false,
+    selectedInterval: 0,
+    mainChartData: {},
+    mainChartOpts: {},
+    totalMarcaciones: 0,
+    totalContactos: 0,
+    totalEfectivos: 0,
+    totalEncuestas: 0,
+    totalTMO: 0,
+    baseSeleccionada: "",
+    databases: [],
+    secondaryChartData2: {},
+  };
   constructor(props) {
     super(props);
     this.API_CCS = new API_CCS();
     this.fetchAll = this.fetchAll.bind(this);
     this.updateMainGraph = this.updateMainGraph.bind(this);
     this.updateClick = this.updateClick.bind(this);
-
-    this.state = {
-      loading: true,
-      loadMainGraph: false,
-      selectedKPI: 0,
-      percentKPI: false,
-      selectedInterval: 0,
-      mainChartData: {},
-      mainChartOpts: {},
-      totalMarcaciones: 0,
-      totalContactos: 0,
-      totalEfectivos: 0,
-      totalEncuestas: 0,
-      baseSeleccionada: "",
-      databases: [],
-    };
 
     setInterval(() => this.fetchAll(), 900000);
   }
@@ -113,6 +114,7 @@ class DashboardGenerico extends Component {
       totalContactos: arrayTotales[0].Contactos,
       totalEfectivos: arrayTotales[0].ContactosEfectivos,
       totalEncuestas: arrayTotales[0].Encuestas,
+      totalTMO: arrayTotales[0].AHT,
     });
 
     var marcacionesDataset = [];
@@ -133,6 +135,12 @@ class DashboardGenerico extends Component {
     var encuestasDataset = [];
     JSON.stringify(arrayGenerales, (key, value) => {
       if (key === "Encuestas") encuestasDataset.push(value);
+      return value;
+    });
+
+    var tmoDataset = [];
+    JSON.stringify(arrayGenerales, (key, value) => {
+      if (key === "AHT") tmoDataset.push(value);
       return value;
     });
 
@@ -201,6 +209,14 @@ class DashboardGenerico extends Component {
           borderWidth: 2,
           data: encuestasDataset,
         },
+        {
+          label: "TMO",
+          backgroundColor: "rgba(63,65,191,0.3)",
+          borderColor: "rgba(63,65,191,0.5)",
+          pointHoverBackgroundColor: "#fff",
+          borderWidth: 2,
+          data: tmoDataset,
+        },
       ],
     };
 
@@ -229,6 +245,7 @@ class DashboardGenerico extends Component {
       0,
       this.state.baseSeleccionada === "" ? "NULL" : this.state.baseSeleccionada
     );
+
     return response;
   };
 
@@ -312,7 +329,7 @@ class DashboardGenerico extends Component {
             <WidgetCard
               icon="icon-speedometer"
               color="primary"
-              header={this.state.totalMarcaciones}
+              header={this.state.totalMarcaciones.toString()}
               value="100"
               loading={this.state.loadMainGraph}
             >
@@ -321,7 +338,7 @@ class DashboardGenerico extends Component {
             <WidgetCard
               icon="icon-people"
               color="primary"
-              header={this.state.totalContactos}
+              header={this.state.totalContactos.toString()}
               value="100"
               loading={this.state.loadMainGraph}
             >
@@ -330,7 +347,7 @@ class DashboardGenerico extends Component {
             <WidgetCard
               icon="icon-notebook"
               color="primary"
-              header={this.state.totalEfectivos}
+              header={this.state.totalEfectivos.toString()}
               value="100"
               loading={this.state.loadMainGraph}
             >
@@ -339,11 +356,20 @@ class DashboardGenerico extends Component {
             <WidgetCard
               icon="icon-graph"
               color="primary"
-              header={this.state.totalEncuestas}
+              header={this.state.totalEncuestas.toString()}
               value="100"
               loading={this.state.loadMainGraph}
             >
               Encuestas
+            </WidgetCard>
+            <WidgetCard
+              icon="icon-control-play"
+              color="primary"
+              header={Math.trunc(this.state.totalTMO).toString()}
+              value="100"
+              loading={this.state.loadMainGraph}
+            >
+              TMO (Segundos)
             </WidgetCard>
           </CardGroup>
 
