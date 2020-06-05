@@ -5,6 +5,7 @@ import DashboardTelevia from "../../views/Dashboard/Televia/DashboardTelevia";
 import DashboardGenerico from "../../views/Dashboard/Generico/DashboardGenerico";
 import DashboardEdenred from "../../views/Dashboard/Edenred/DashboardEdenred";
 import DashboardAltanRedes from "../../views/Dashboard/AltanRedes/AltanRedes";
+import DashboardEzetera from "../../views/Dashboard/Ezetera/Ezetera";
 
 class Dashboard extends Component {
   render() {
@@ -17,6 +18,8 @@ class Dashboard extends Component {
         return <DashboardEdenred />;
       case 23:
         return <DashboardAltanRedes />;
+      case 24:
+        return <DashboardEzetera />;
       default:
         return <DashboardGenerico />;
     }
