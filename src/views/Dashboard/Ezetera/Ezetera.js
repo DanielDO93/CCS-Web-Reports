@@ -12,6 +12,7 @@ import {
   CardGroup,
   CardHeader,
 } from "reactstrap";
+import Select from "react-select";
 import * as ChartConfig from "../ChartConfig";
 import { hexToRgba } from "@coreui/coreui/dist/js/coreui-utilities";
 import Loader from "react-loader-spinner";
@@ -26,6 +27,34 @@ import "moment/locale/es";
 
 const brandPrimary = "#C00327";
 //const brandInfo = getStyle('--info')
+const brandColor = "#fc4669";
+
+const customStyles = {
+  control: (base, state) => ({
+    ...base,
+    border: "1px solid #e4e7ea",
+    borderRadius: "0.25rem",
+    fontSize: "0.875rem",
+    boxShadow: state.isFocused ? "0 0 0 0.2rem rgba(192, 3, 39, 0.25)" : 0,
+    borderColor: state.isFocused ? brandColor : base.borderColor,
+    "&:hover": {
+      borderColor: state.isFocused ? brandColor : base.borderColor,
+    },
+    "&:active": {
+      borderColor: state.isFocused ? brandColor : base.borderColor,
+    },
+  }),
+};
+const theme = (theme) => ({
+  ...theme,
+  colors: {
+    ...theme.colors,
+    primary25: "rgba(192,3,39,.2)",
+    primary50: "rgba(192,3,39,.2)",
+    primary75: "rgba(192,3,39,.2)",
+    primary: "rgba(192,3,39,.8)",
+  },
+});
 
 class DashboardGenerico extends Component {
   constructor(props) {
@@ -45,6 +74,8 @@ class DashboardGenerico extends Component {
       selectedInterval: 2,
       mainChartData: {},
       mainChartOpts: {},
+      colegios: [],
+      selectedColegio: "",
     };
 
     setInterval(() => this.fetchAll(), 900000);
@@ -62,36 +93,22 @@ class DashboardGenerico extends Component {
     this.setState({ loadMainGraph: true });
 
     var arrayTotales = await this.requestTotales();
-    var arrayMedioQuejas = await this.requestMedioQuejas();
-    var arrayTop5Motivos = await this.requestTop5Motivos();
-    var arrayTop5Vialidades = await this.requestTop5Vialidades();
 
-    var secondaryChartData1 = {
-      labels: Object.keys(arrayMedioQuejas[0]),
-      datasets: [
-        {
-          label: "",
-          backgroundColor: [
-            hexToRgba(brandPrimary, 100),
-            hexToRgba(brandPrimary, 80),
-            hexToRgba(brandPrimary, 60),
-            hexToRgba(brandPrimary, 40),
-          ],
-          pointHoverBackgroundColor: "#fff",
-          borderWidth: 2,
-          data: Object.values(arrayMedioQuejas[0]),
-        },
-      ],
-    };
+    var arrayTop10Colegios = await this.requestTop10Colegios();
 
     var sChrtL2 = [];
-    JSON.stringify(arrayTop5Motivos, (key, value) => {
-      if (key === "Motivo") sChrtL2.push(value);
+    JSON.stringify(arrayTop10Colegios, (key, value) => {
+      if (key === "Tipificacion") sChrtL2.push(value);
       return value;
     });
     var sChrtD2 = [];
-    JSON.stringify(arrayTop5Motivos, (key, value) => {
-      if (key === "Quejas") sChrtD2.push(value);
+    JSON.stringify(arrayTop10Colegios, (key, value) => {
+      if (key === "Cuenta") sChrtD2.push(value);
+      return value;
+    });
+    var sChrtD2P = [];
+    JSON.stringify(arrayTop10Colegios, (key, value) => {
+      if (key === "Porcentaje") sChrtD2P.push(value);
       return value;
     });
 
@@ -99,7 +116,7 @@ class DashboardGenerico extends Component {
       labels: sChrtL2,
       datasets: [
         {
-          label: "",
+          label: "Registros",
           backgroundColor: [
             hexToRgba(brandPrimary, 100),
             hexToRgba(brandPrimary, 80),
@@ -110,25 +127,8 @@ class DashboardGenerico extends Component {
           borderWidth: 2,
           data: sChrtD2,
         },
-      ],
-    };
-
-    var sChrtL3 = [];
-    JSON.stringify(arrayTop5Vialidades, (key, value) => {
-      if (key === "Vialidad") sChrtL3.push(value);
-      return value;
-    });
-    var sChrtD3 = [];
-    JSON.stringify(arrayTop5Vialidades, (key, value) => {
-      if (key === "Quejas") sChrtD3.push(value);
-      return value;
-    });
-
-    var secondaryChartData3 = {
-      labels: sChrtL3,
-      datasets: [
         {
-          label: "",
+          label: "Porcentaje",
           backgroundColor: [
             hexToRgba(brandPrimary, 100),
             hexToRgba(brandPrimary, 80),
@@ -137,7 +137,7 @@ class DashboardGenerico extends Component {
           ],
           pointHoverBackgroundColor: "#fff",
           borderWidth: 2,
-          data: sChrtD3,
+          data: sChrtD2P,
         },
       ],
     };
@@ -148,13 +148,15 @@ class DashboardGenerico extends Component {
       .format("H:mm:ss");
 
     this.setState({
+      totalVoz: arrayTotales[0].Entrantes,
+      totalAtendidas: arrayTotales[0].Atendidas,
+      totalLlamadasSLA: arrayTotales[0].AtendidasSLA,
+      totalAbandonadas: arrayTotales[0].Abandonadas,
       totalSLA: (arrayTotales[0].SLA * 100).toPrecision(3) + "%",
       totalABA: (arrayTotales[0].ABA * 100).toPrecision(3) + "%",
       totalAHT: AHTFormat,
       totalQA: (arrayTotales[0].Calidad * 100).toPrecision(3) + "%",
-      secondaryChartData1: secondaryChartData1,
       secondaryChartData2: secondaryChartData2,
-      secondaryChartData3: secondaryChartData3,
     });
 
     var data = await this.API_CCS.getGenerales(
@@ -376,17 +378,16 @@ class DashboardGenerico extends Component {
     return response;
   };
 
-  requestTop5Motivos = async () => {
-    const response = await this.API_CCS.getTeleviaTop5Motivos(
-      this.state.selectedInterval
+  requestTop10Colegios = async () => {
+    const response = await this.API_CCS.getTop10Ezetera(
+      this.state.selectedInterval,
+      this.state.selectedColegio === "" ? "NULL" : this.state.selectedColegio
     );
     return response;
   };
 
-  requestTop5Vialidades = async () => {
-    const response = await this.API_CCS.getTeleviaTop5Vialidadess(
-      this.state.selectedInterval
-    );
+  requestColegios = async () => {
+    const response = await this.API_CCS.getColegiosEzetera();
     return response;
   };
 
@@ -451,9 +452,23 @@ class DashboardGenerico extends Component {
     this.fetchAll();
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.fetchAll();
+    var datos = await this.requestColegios();
+    this.setState({ colegios: datos });
   }
+
+  handleChangeColegio = (e) => {
+    try {
+      this.setState({ selectedColegio: e.label }, async () => {
+        this.fetchAll();
+      });
+    } catch (err) {
+      this.setState({ selectedColegio: "" }, () => {
+        this.fetchAll();
+      });
+    }
+  };
 
   render() {
     var today = new Date();
@@ -483,7 +498,7 @@ class DashboardGenerico extends Component {
             <WidgetCard
               icon="icon-phone"
               color="primary"
-              header={"0"}
+              header={this.state.totalVoz}
               value="100"
               loading={this.state.loadMainGraph}
             >
@@ -719,7 +734,7 @@ class DashboardGenerico extends Component {
             <WidgetCard
               icon="icon-phone"
               color="primary"
-              header={"0"}
+              header={this.state.totalVoz}
               value="100"
               loading={this.state.loadMainGraph}
             >
@@ -728,7 +743,7 @@ class DashboardGenerico extends Component {
             <WidgetCard
               icon="icon-bubble"
               color="primary"
-              header={"0"}
+              header={this.state.totalLlamadasSLA}
               value="100"
               loading={this.state.loadMainGraph}
             >
@@ -737,7 +752,7 @@ class DashboardGenerico extends Component {
             <WidgetCard
               icon="icon-call-in"
               color="primary"
-              header={"0"}
+              header={this.state.totalAtendidas}
               value="100"
               loading={this.state.loadMainGraph}
             >
@@ -746,7 +761,7 @@ class DashboardGenerico extends Component {
             <WidgetCard
               icon="icon-close"
               color="primary"
-              header={"0"}
+              header={this.state.totalAbandonadas}
               value="100"
               loading={this.state.loadMainGraph}
             >
@@ -757,11 +772,34 @@ class DashboardGenerico extends Component {
           <Row>
             <Col>
               <Card>
-                <CardHeader>Top 5 Colegios</CardHeader>
+                <CardHeader>Top 10 Tipificaciones (Por Colegio)</CardHeader>
                 <CardBody>
+                  <Select
+                    options={this.state.colegios}
+                    styles={customStyles}
+                    isClearable={true}
+                    placeholder={"-Selecciona-"}
+                    theme={theme}
+                    onChange={this.handleChangeColegio}
+                    value={
+                      this.state.selectedColegio === ""
+                        ? null
+                        : {
+                            label: this.state.selectedColegio,
+                            value: this.state.selectedColegio,
+                          }
+                    }
+                  />
+                  <input
+                    tabIndex={-1}
+                    style={{ opacity: 0, height: 0 }}
+                    onChange={(e) => {}}
+                    value={this.state.selectedColegio}
+                    required
+                  />
                   <div className="chart-wrapper" style={{ height: 250 + "px" }}>
                     <Bar
-                      data={[]}
+                      data={this.state.secondaryChartData2}
                       options={ChartConfig.secondaryChart2}
                       height={250}
                     />
@@ -771,7 +809,7 @@ class DashboardGenerico extends Component {
             </Col>
             <Col>
               <Card>
-                <CardHeader>Top Tipificaciones</CardHeader>
+                <CardHeader>Top 10 Venta</CardHeader>
                 <CardBody>
                   <div className="chart-wrapper" style={{ height: 250 + "px" }}>
                     <Bar

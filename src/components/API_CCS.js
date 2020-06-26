@@ -184,4 +184,29 @@ export default class API_CCS {
       return Promise.resolve(res);
     });
   }
+
+  getTop10Ezetera(tipo, colegio) {
+    return this.fetch(
+      "https://api.ccscontactcenter.com/v1/campaigns/ezetera/Top10Tipificaciones?tipo=" +
+        tipo +
+        "&colegio=" +
+        colegio,
+      {
+        method: "GET",
+      }
+    ).then((res) => {
+      return Promise.resolve(res);
+    });
+  }
+
+  getColegiosEzetera() {
+    return this.fetch(
+      "https://api.ccscontactcenter.com/v1/campaigns/ezetera/colegios",
+      {
+        method: "GET",
+      }
+    ).then((res) => {
+      return Promise.resolve(res);
+    });
+  }
 }

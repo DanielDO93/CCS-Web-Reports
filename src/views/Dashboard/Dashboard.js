@@ -26,4 +26,5 @@ class Dashboard extends Component {
   }
 }
 
+
 export default withAuth(Dashboard);
