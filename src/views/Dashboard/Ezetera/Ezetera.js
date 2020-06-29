@@ -513,7 +513,7 @@ class DashboardGenerico extends Component {
             >
               Total Chat
             </WidgetCard>
-            <WidgetCard
+            {/*<WidgetCard
               icon="icon-envelope"
               color="primary"
               header={"0"}
@@ -521,7 +521,7 @@ class DashboardGenerico extends Component {
               loading={this.state.loadMainGraph}
             >
               Total Whatsapp
-            </WidgetCard>
+            </WidgetCard>*/}
           </CardGroup>
           <CardGroup className="mb-4">
             <WidgetCard
