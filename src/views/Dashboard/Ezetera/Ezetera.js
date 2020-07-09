@@ -807,20 +807,6 @@ class DashboardGenerico extends Component {
                 </CardBody>
               </Card>
             </Col>
-            <Col>
-              <Card>
-                <CardHeader>Top 10 Venta</CardHeader>
-                <CardBody>
-                  <div className="chart-wrapper" style={{ height: 250 + "px" }}>
-                    <Bar
-                      data={[]}
-                      options={ChartConfig.secondaryChart2}
-                      height={250}
-                    />
-                  </div>
-                </CardBody>
-              </Card>
-            </Col>
           </Row>
         </div>
       );
