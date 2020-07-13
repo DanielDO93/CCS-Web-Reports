@@ -209,4 +209,18 @@ export default class API_CCS {
       return Promise.resolve(res);
     });
   }
+
+  getChatStatus(tipo, totalizado) {
+    return this.fetch(
+      "https://api.ccscontactcenter.com/v1/campaigns/ezetera/ChatStatus?tipo=" +
+        tipo +
+        "&totalizado=" +
+        totalizado,
+      {
+        method: "GET",
+      }
+    ).then((res) => {
+      return Promise.resolve(res);
+    });
+  }
 }
