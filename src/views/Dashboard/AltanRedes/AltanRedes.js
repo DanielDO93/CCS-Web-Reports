@@ -70,6 +70,7 @@ class DashboardGenerico extends Component {
     totalEncuestas: 0,
     totalTMO: 0,
     baseSeleccionada: "",
+    multiValue: [],
     databases: [],
     secondaryChartData2: {},
   };
@@ -79,21 +80,42 @@ class DashboardGenerico extends Component {
     this.fetchAll = this.fetchAll.bind(this);
     this.updateMainGraph = this.updateMainGraph.bind(this);
     this.updateClick = this.updateClick.bind(this);
-
+    this.handleMultiChange = this.handleMultiChange.bind(this);
     setInterval(() => this.fetchAll(), 900000);
   }
 
   handleChangeDBB = (e) => {
-    try {
-      this.setState({ baseSeleccionada: e.label }, () => {
-        this.fetchAll();
-      });
-    } catch (err) {
-      this.setState({ baseSeleccionada: "" }, () => {
-        this.fetchAll();
-      });
-    }
+    this.setState(
+      (state) => {
+        return {
+          multiValue: e === null ? [] : e,
+        };
+      },
+      () => {
+        var x = this.state.multiValue;
+        var baseArray = [];
+        x.forEach((res) => {
+          baseArray.push(res.value);
+        });
+
+        if (baseArray.length === 0) {
+          this.setState({ baseSeleccionada: "" }, () => this.fetchAll());
+        } else {
+          this.setState({ baseSeleccionada: baseArray.join("||") + "||" }, () =>
+            this.fetchAll()
+          );
+        }
+      }
+    );
   };
+
+  handleMultiChange(option) {
+    this.setState((state) => {
+      return {
+        multiValue: option,
+      };
+    });
+  }
 
   async fetchAll() {
     this.setState({ loading: true });
@@ -448,18 +470,11 @@ class DashboardGenerico extends Component {
                         <Select
                           options={this.state.databases}
                           styles={customStyles}
-                          isClearable={true}
+                          isMulti={true}
                           placeholder={"-Todas las Bases-"}
                           theme={theme}
                           onChange={this.handleChangeDBB}
-                          value={
-                            this.state.baseSeleccionada === ""
-                              ? null
-                              : {
-                                  label: this.state.baseSeleccionada,
-                                  value: this.state.baseSeleccionada,
-                                }
-                          }
+                          value={this.state.multiValue}
                         />
                       </Col>
                     </div>
