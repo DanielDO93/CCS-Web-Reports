@@ -6,6 +6,7 @@ import DashboardGenerico from "../../views/Dashboard/Generico/DashboardGenerico"
 import DashboardEdenred from "../../views/Dashboard/Edenred/DashboardEdenred";
 import DashboardAltanRedes from "../../views/Dashboard/AltanRedes/AltanRedes";
 import DashboardEzetera from "../../views/Dashboard/Ezetera/Ezetera";
+import DashboardPriceShoes from "../../views/Dashboard/PriceShoes/PriceShoes";
 
 class Dashboard extends Component {
   render() {
@@ -20,11 +21,12 @@ class Dashboard extends Component {
         return <DashboardAltanRedes />;
       case 24:
         return <DashboardEzetera />;
+      case 25:
+        return <DashboardPriceShoes />;
       default:
         return <DashboardGenerico />;
     }
   }
 }
-
 
 export default withAuth(Dashboard);

@@ -21,6 +21,7 @@
     "chartjs-plugin-deferred": "^1.0.1",
     "classnames": "^2.2.6",
     "core-js": "^2.6.5",
+    "date-input-polyfill": "^2.14.0",
     "enzyme": "^3.9.0",
     "enzyme-adapter-react-16": "^1.9.1",
     "flag-icon-css": "^3.2.1",

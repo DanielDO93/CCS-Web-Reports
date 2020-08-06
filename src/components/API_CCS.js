@@ -56,6 +56,26 @@ export default class API_CCS {
     });
   }
 
+  getGeneralesPS(tipo, campania, totalizado, fecha_ini, fecha_fin) {
+    return this.fetch(
+      "https://api.ccscontactcenter.com/v1/Campaigns/General/GeneralPS?tipo=" +
+        tipo +
+        "&campania=" +
+        campania +
+        "&totalizado=" +
+        totalizado +
+        "&fecha_ini=" +
+        fecha_ini +
+        "&fecha_fin=" +
+        fecha_fin,
+      {
+        method: "GET",
+      }
+    ).then((res) => {
+      return Promise.resolve(res);
+    });
+  }
+
   getCampaignAvatar(id) {
     return this.fetch(
       "https://api.ccscontactcenter.com/v1/Campaigns/Avatar?id=" + id,

@@ -2180,7 +2180,7 @@ babel-register@^6.26.0:
     mkdirp "^0.5.1"
     source-map-support "^0.4.15"
 
-babel-runtime@^6.22.0, babel-runtime@^6.26.0:
+babel-runtime@^6.11.6, babel-runtime@^6.22.0, babel-runtime@^6.26.0:
   version "6.26.0"
   resolved "https://registry.yarnpkg.com/babel-runtime/-/babel-runtime-6.26.0.tgz#965c7058668e82b55d7bfe04ff2337bc8b5647fe"
   integrity sha1-llxwWGaOgrVde/4E/yM3vItWR/4=
@@ -3523,6 +3523,13 @@ date-fns@v2.0.0-alpha.25:
   version "2.0.0-alpha.25"
   resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.0.0-alpha.25.tgz#651a5d1f59a01af6cf0371e39b2ae29df5d521ee"
   integrity sha512-iQzJkHF0L4wah9Ae9PkvwemwFz6qmRLuNZcghmvf2t+ptLs1qXzONLiGtjmPQzL6+JpC01JjlTopY2AEy4NFAg==
+
+date-input-polyfill@^2.14.0:
+  version "2.14.0"
+  resolved "https://registry.yarnpkg.com/date-input-polyfill/-/date-input-polyfill-2.14.0.tgz#9b2e569effc525796101d3199b9ae731c8a50e12"
+  integrity sha1-my5Wnv/FJXlhAdMZm5rnMcilDhI=
+  dependencies:
+    babel-runtime "^6.11.6"
 
 date-now@^0.1.4:
   version "0.1.4"
